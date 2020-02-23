@@ -188,6 +188,268 @@ plot(x=women$height, y=women$weight)
 abline(model, col=2)
 residuals(model)
 women$weight
-predict(model, newdata = women,type = 'response')
+predwt<-predict(model, newdata = women,type = 'response')
 head(women)
 3.45*58-87
+cbind(women,predwt, res = women$weight-predwt, res2=residuals(model))
+
+summary(model)
+sqrt(sum(residuals(model)^2))    #SSE(sum of square of error)
+range(women$height)
+ndata=data.frame(height=c(66.5, 75.8))
+predict(model, newdata = ndata, type='response')
+confint(model)
+
+
+#Hypotesis testing
+#case2: LR------------------------------------
+link1='https://docs.google.com/spreadsheets/d/1h7HU0X_Q4T5h5D1Q36qoK40Tplz94x_HZYHOJJC_edU/edit#gid=2061602817'
+library(gsheet)
+df=as.data.frame(gsheet2tbl(link1))
+head(df)
+link='https://docs.google.com/spreadsheets/d/1h7HU0X_Q4T5h5D1Q36qoK40Tplz94x_HZYHOJJC_edU/edit#gid=2023826519'
+df1=as.data.frame(gsheet2tbl(link))
+head(df1)
+model2= lm(Y ~ X, data=df1)
+summary(model2)
+plot(df1$X,df1$Y)
+abline(model2)
+resid(model2)
+range(df1$X)
+(ndata2=data.frame(X=3:4))
+
+
+
+
+
+
+
+#----------------------------------------------------------------------------------------------------------------------------------#
+
+
+# Decision Tree - Classification
+#we want predict for combination of input variables, is a person likely to survive or not
+
+#import data from online site
+path = 'https://raw.githubusercontent.com/DUanalytics/datasets/master/csv/titanic_train.csv'
+titanic <- read.csv(path)
+head(titanic)
+names(titanic)
+data = titanic[,c(2,3,5,6,7)]  #select few columns only
+head(data)
+dim(data)
+#load libraries
+library(rpart)
+library(rpart.plot)
+str(data)
+#Decision Tree
+names(data)
+table(data$Survived)
+prop.table(table(data$Survived))
+str(data)
+data$Pclass = factor(data$Pclass)
+fit <- rpart(Survived ~ ., data = data, method = 'class')
+fit
+rpart.plot(fit, extra = 104, cex=.8,nn=T)  #plot
+head(data)
+printcp(fit) #select complexity parameter
+prunetree2 = prune(fit, cp=.017544)# pruned the tree,   Cp=complexity  parameter
+rpart.plot(prunetree2, cex=.8,nn=T, extra=104)
+prunetree2
+nrow(data)
+table(data$Survived)
+# predict for Female, pclass=3, siblings=2, what is the chance of survival
+
+#Predict class category or probabilities
+library(dplyr)
+(testdata = sample_n(data,2))
+predict(prunetree2, newdata=testdata, type='class')
+predict(prunetree2, newdata=testdata, type='prob')
+str(data)
+testdata2 = data.frame(Pclass=factor(2), Sex=factor('male'), Age=15, SibSp=2)
+testdata2
+predict(prunetree2, newdata = testdata2, type='class')
+predict(prunetree2, newdata = testdata2, type='prob')
+
+#Use decision trees for predicting
+#customer is likely to buy a product or not with probabilities
+#customer is likely to default on payment or not with probabilities
+#Student is likely to get selected, cricket team likely to win etc
+
+#Imp steps
+#select columns for prediction
+#load libraries, create model y ~ x1 + x2 
+#prune the tree with cp value
+#plot the graph
+#predict for new cases
+
+#rpart, CART, classification model
+#regression decision = predict numerical value eg sales
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#write inferences
+#R2=0.942,
+#sales=1.669*Area+0.9645
+
+
+
+
+
+
+#multiple linear regression
+
+
+link2='https://docs.google.com/spreadsheets/d/1h7HU0X_Q4T5h5D1Q36qoK40Tplz94x_HZYHOJJC_edU/edit#gid=1595306231'
+ml1=as.data.frame(gsheet2tbl(link2))
+ml1
+model3<-lm(sqty ~ price + promotion, data = ml1)
+summary(model3)
+head(model3)
+plot(ml1$price, ml1$sqty)
+plot(ml1$promotion, ml1$sqty)
+range(ml1$price)
+range(ml1$promotion)
+range(ml1$sqty)
+plot(model3)
+plot(ml1$promotion, ml1$sqty)
+abline(model3, col=2)
+plot(model3)
+
+# Decision Tree - Classification
+#we want predict for combination of input variables, is a person likely to survive or not
+
+#import data from online site
+path = 'https://raw.githubusercontent.com/DUanalytics/datasets/master/csv/titanic_train.csv'
+titanic <- read.csv(path)
+head(titanic)
+names(titanic)
+data = titanic[,c(2,3,5,6,7)]  #select few columns only
+head(data)
+dim(data)
+#load libraries
+library(rpart)
+library(rpart.plot)
+str(data)
+#Decision Tree
+names(data)
+table(data$Survived)
+str(data)
+data$Pclass = factor(data$Pclass)
+fit <- rpart(Survived ~ ., data = data, method = 'class')
+fit
+rpart.plot(fit, extra = 104, cex=.8,nn=T)  #plot
+head(data)
+printcp(fit) #select complexity parameter
+prunetree2 = prune(fit, cp=.018)
+rpart.plot(prunetree2, cex=.8,nn=T, extra=104)
+prunetree2
+nrow(data)
+table(data$Survived)
+# predict for Female, pclass=3, siblings=2, what is the chance of survival
+
+#Predict class category or probabilities
+(testdata = sample_n(data,2))
+predict(prunetree2, newdata=testdata, type='class')
+predict(prunetree2, newdata=testdata, type='prob')
+str(data)
+testdata2 = data.frame(Pclass=factor(2), Sex=factor('male'), Age=15, SibSp=2)
+testdata2
+predict(prunetree2, newdata = testdata2, type='class')
+predict(prunetree2, newdata = testdata2, type='prob')
+
+#Use decision trees for predicting
+#customer is likely to buy a product or not with probabilities
+#customer is likely to default on payment or not with probabilities
+#Student is likely to get selected, cricket team likely to win etc
+
+#Imp steps
+#select columns for prediction
+#load libraries, create model y ~ x1 + x2 
+#prune the tree with cp value
+#plot the graph
+#predict for new cases
+
+#rpart, CART, classification model
+#regression decision = predict numerical value eg sales
